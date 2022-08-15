@@ -91,7 +91,7 @@ export default class Builder {
     return this;
   }
 
-  public static make(): Builder {
-    return new Builder();
+  public static make(grammar?: Grammar): Builder {
+    return new Builder(grammar);
   }
 }
