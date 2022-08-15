@@ -1,0 +1,97 @@
+import tap from './support/tap';
+import type Grammar from './grammar';
+import { Bool, NestedCallback, Operator, Where, WhereBasic, WhereIn, WhereNested } from './types';
+import { operators } from './constants';
+
+export default class Builder {
+  public wheres: Where[] = [];
+
+  protected grammar: Grammar;
+
+  protected readonly operators = operators;
+
+  constructor(grammar?: Grammar) {
+    this.grammar = grammar;
+  }
+
+  public orWhere(field: NestedCallback | string, operator: Operator | any, value?: any) {
+    return this.where(field, operator, value, 'or');
+  }
+
+  public setGrammar(grammar: Grammar): this {
+    this.grammar = grammar;
+
+    return this;
+  }
+
+  public toQuery<T = any>(): T {
+    if (!this.grammar) {
+      throw new ReferenceError('No grammar has been set');
+    }
+
+    return this.grammar.compile(this);
+  }
+
+  public when(condition: any, callback: (builder: this) => void, fallback?: (builder: this) => void): this {
+    condition ? callback(this) : fallback?.(this);
+
+    return this;
+  }
+
+  public where(field: NestedCallback | string, operator?: Operator | any, value?: any, boolean: Bool = 'and'): this {
+    if (typeof field === 'function') {
+      return this.whereNested(field);
+    }
+
+    value ??= operator;
+    operator = operator === value ? '=' : operator;
+
+    if (!this.operators.includes(operator)) {
+      throw new RangeError(`Operator [${operator}] not supported`);
+    }
+
+    const where: WhereBasic = { boolean, field, operator, type: 'Basic', value };
+
+    this.wheres.push(where);
+
+    return this;
+  }
+
+  public whereIn(field: string, values: any[], boolean: Bool = 'and'): this {
+    const where: WhereIn = { boolean, field, type: 'In', value: values };
+
+    this.wheres.push(where);
+
+    return this;
+  }
+
+  public whereNested(callback: NestedCallback, boolean: Bool = 'and'): this {
+    const where: WhereNested = { boolean, type: 'Nested', value: tap(Builder.make(), callback) };
+
+    this.wheres.push(where);
+
+    return this;
+  }
+
+  public whereNot(field: string, value: any, boolean: Bool = 'and'): this {
+    return this.where(field, '!=', value, boolean);
+  }
+
+  public whereNotIn(field: string, values: any[], boolean: Bool = 'and'): this {
+    const where: WhereIn = { boolean, field, type: 'NotIn', value: values };
+
+    this.wheres.push(where);
+
+    return this;
+  }
+
+  public whereRaw(value: any, boolean: Bool = 'and'): this {
+    this.wheres.push({ boolean, type: 'Raw', value });
+
+    return this;
+  }
+
+  public static make(): Builder {
+    return new Builder();
+  }
+}
