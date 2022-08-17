@@ -1,6 +1,6 @@
 import tap from './support/tap';
 import type Grammar from './grammar';
-import { Bool, NestedCallback, Operator, Where, WhereBasic, WhereIn, WhereNested } from './types';
+import { Bool, NestedCallback, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested } from './types';
 import { operators } from './constants';
 
 export default class Builder {
@@ -51,6 +51,14 @@ export default class Builder {
     }
 
     const where: WhereBasic = { boolean, field, operator, type: 'Basic', value };
+
+    this.wheres.push(where);
+
+    return this;
+  }
+
+  public whereBetween(field: string, range: WhereBetween['value'], boolean: Bool = 'and'): this {
+    const where: WhereBetween = { boolean, field, type: 'Between', value: range };
 
     this.wheres.push(where);
 

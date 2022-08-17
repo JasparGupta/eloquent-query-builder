@@ -1,6 +1,6 @@
 import Builder from './builder';
 import Grammar from './grammar';
-import { Bool, Operator, WhereBasic, WhereIn, WhereNested, WhereRaw } from './types';
+import { Bool, Operator, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
 
 describe('Builder', () => {
   describe('orWhere', () => {
@@ -17,9 +17,9 @@ describe('Builder', () => {
         operator: '=',
         type: 'Basic',
         value: 'bar',
-      })
+      });
     });
-  })
+  });
 
   describe('setGrammar', () => {
     test('sets the grammar property on the builder instance', () => {
@@ -108,6 +108,23 @@ describe('Builder', () => {
     });
   });
 
+  describe('whereBetween', () => {
+    test('adds a "Between" clause', () => {
+      const builder = Builder.make();
+
+      const result = builder.whereBetween('foo', ['bar', 'baz']);
+      const [where] = builder.wheres;
+
+      expect(result).toBe(builder);
+      expect(where).toEqual<WhereBetween>({
+        boolean: 'and',
+        field: 'foo',
+        type: 'Between',
+        value: ['bar', 'baz'],
+      });
+    });
+  });
+
   describe.each<[string, WhereIn['type']]>([
     ['whereIn', 'In'],
     ['whereNotIn', 'NotIn'],
@@ -143,7 +160,7 @@ describe('Builder', () => {
         boolean: 'and',
         type: 'Nested',
         value: expect.any(Builder),
-      })
+      });
     });
   });
 
@@ -161,9 +178,9 @@ describe('Builder', () => {
         operator: '!=',
         type: 'Basic',
         value: 'bar',
-      })
-    })
-  })
+      });
+    });
+  });
 
   describe('whereRaw', () => {
     test('add a "Raw" clause', () => {

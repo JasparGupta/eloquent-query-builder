@@ -1,7 +1,7 @@
 import mergeWith from 'lodash.mergewith';
 import { Filter } from 'mongodb';
 import Grammar from '../grammar';
-import { BaseWhere, Bool, Operator, Where, WhereBasic, WhereIn, WhereNested, WhereRaw } from '../types';
+import { BaseWhere, Bool, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from '../types';
 import Builder from '../builder';
 
 type Compiled<T> = T & { compiled: Filter<any> }
@@ -63,6 +63,12 @@ export default class MongoDB extends Grammar {
       : { [field]: { [operator]: value } };
 
     return { ...where, compiled };
+  }
+
+  protected whereBetween(query: Builder, where: WhereBetween): Compiled<WhereBetween> {
+    const { field, value: [from, to] } = where;
+
+    return { ...where, compiled: { [field]: { $gte: from, $lte: to } } };
   }
 
   protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {

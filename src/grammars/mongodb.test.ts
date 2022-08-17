@@ -98,77 +98,97 @@ describe('MongoDB grammar', () => {
         value: 'bar',
       });
     });
+  });
 
-    describe.each<[string, WhereIn['type'], string]>([
-      ['whereIn', 'In', '$in'],
-      ['whereNotIn', 'NotIn', '$nin']
-    ])('%s', (method, type, operator) => {
-      test(`compiles "${type}" where`, () => {
-        const builder = Builder.make();
-        const grammar = new MongoDB();
-        const values = [1, 2, 3];
+  describe('whereBetween', () => {
+    test('', () => {
+      const builder = Builder.make();
+      const grammar = new MongoDB();
 
-        builder[method]('foo', values);
+      builder.whereBetween('me', ['rock', 'hard place']);
+      const [where] = builder.wheres;
 
-        const [where] = builder.wheres;
+      const result = grammar.whereBetween(builder, where);
 
-        const result = grammar[method](builder, where);
-
-        expect(result).toEqual({
-          boolean: 'and',
-          compiled: { foo: { [operator]: values } },
-          field: 'foo',
-          type,
-          value: where.value,
-        });
+      expect(result).toEqual({
+        boolean: 'and',
+        compiled: { me: { $gte: 'rock', $lte: 'hard place' } },
+        field: 'me',
+        type: 'Between',
+        value: ['rock', 'hard place'],
       });
     });
+  });
 
-    describe('whereNested', () => {
-      test.each<[Operator, string]>([
-        ['and', '$and'],
-        ['and not', '$not'],
-        ['or', '$or'],
-        ['or not', '$nor'],
-      ])('compiles "Nested" where', (boolean, operator) => {
-        const builder = Builder.make();
-        const grammar = new MongoDB();
+  describe.each<[string, WhereIn['type'], string]>([
+    ['whereIn', 'In', '$in'],
+    ['whereNotIn', 'NotIn', '$nin']
+  ])('%s', (method, type, operator) => {
+    test(`compiles "${type}" where`, () => {
+      const builder = Builder.make();
+      const grammar = new MongoDB();
+      const values = [1, 2, 3];
 
-        builder.whereNested((query) => {
-          query.where('name', 'John');
-          query.where('age', '>', 18);
-        }, boolean);
+      builder[method]('foo', values);
 
-        const [where] = builder.wheres;
+      const [where] = builder.wheres;
 
-        const result = grammar.whereNested(builder, where);
+      const result = grammar[method](builder, where);
 
-        expect(result).toEqual({
-          boolean,
-          compiled: { $and: [{ name: 'John', age: { $gt: 18 } }] },
-          type: 'Nested',
-          value: where.value,
-        });
+      expect(result).toEqual({
+        boolean: 'and',
+        compiled: { foo: { [operator]: values } },
+        field: 'foo',
+        type,
+        value: where.value,
       });
     });
+  });
 
-    describe('whereRaw', () => {
-      test.each<Bool>(['and', 'and not', 'or', 'or not'])('compiles "Raw" where', (boolean) => {
-        const builder = Builder.make();
-        const grammar = new MongoDB();
+  describe('whereNested', () => {
+    test.each<[Operator, string]>([
+      ['and', '$and'],
+      ['and not', '$not'],
+      ['or', '$or'],
+      ['or not', '$nor'],
+    ])('compiles "Nested" where', (boolean, operator) => {
+      const builder = Builder.make();
+      const grammar = new MongoDB();
 
-        builder.whereRaw({ foo: 'bar', bar: { $ne: 'baz' } }, boolean);
+      builder.whereNested((query) => {
+        query.where('name', 'John');
+        query.where('age', '>', 18);
+      }, boolean);
 
-        const [where] = builder.wheres;
+      const [where] = builder.wheres;
 
-        const result = grammar.whereRaw(builder, where);
+      const result = grammar.whereNested(builder, where);
 
-        expect(result).toEqual({
-          boolean,
-          compiled: where.value,
-          type: 'Raw',
-          value: where.value
-        });
+      expect(result).toEqual({
+        boolean,
+        compiled: { $and: [{ name: 'John', age: { $gt: 18 } }] },
+        type: 'Nested',
+        value: where.value,
+      });
+    });
+  });
+
+  describe('whereRaw', () => {
+    test.each<Bool>(['and', 'and not', 'or', 'or not'])('compiles "Raw" where', (boolean) => {
+      const builder = Builder.make();
+      const grammar = new MongoDB();
+
+      builder.whereRaw({ foo: 'bar', bar: { $ne: 'baz' } }, boolean);
+
+      const [where] = builder.wheres;
+
+      const result = grammar.whereRaw(builder, where);
+
+      expect(result).toEqual({
+        boolean,
+        compiled: where.value,
+        type: 'Raw',
+        value: where.value
       });
     });
   });
