@@ -29,7 +29,7 @@ export default class MongoDB extends Grammar {
     if (query.wheres.length === 1) {
       const [filter] = super.compile(query);
 
-      return filter;
+      return filter.compiled;
     }
 
     const [first, second] = query.wheres;

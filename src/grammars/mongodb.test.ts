@@ -22,14 +22,7 @@ describe('MongoDB grammar', () => {
 
       const actual = grammar.compile(builder);
 
-      expect(actual).toEqual({
-        boolean: 'and',
-        compiled: { foo: 'bar' },
-        field: 'foo',
-        operator: '=',
-        type: 'Basic',
-        value: 'bar',
-      });
+      expect(actual).toEqual({ foo: 'bar' });
     });
 
     test('compiles the query builder', () => {
