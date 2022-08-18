@@ -39,3 +39,60 @@ const query = builder.toQuery();
  * }
  */
 ```
+
+## API
+
+### Builder
+
+#### Constructor
+##### `new Builder(grammar?: Grammar): Builder`
+Optionally takes a `Grammar` instance as an argument.
+
+#### Static methods
+##### `Builder.make(grammar?: Grammar): Builder`
+Returns a new `Builder` instance.
+
+#### Instance methods
+##### `builder.orWhere(field: string, value: any): Builder`
+Adds a simple `field` equals `value` filter or the previous filter.
+
+##### `builder.orWhere(field: string, operator: string, value: any): Builder`
+Adds a filter where `field` is compared to `value` with the given operator or the previous filter.
+
+##### `builder.setGrammar(grammar: Grammar): Builder`
+Sets a Grammar instance against the builder for when `toQuery()` is called.
+
+##### `builder.toQuery(): any`
+Calls the Grammar `compile()` method to generate a query.
+
+##### `builder.when(condition: any, callback: (builder: Builder) => void, fallback?: (builder: Builder) => void)`
+Calls the given callback when the condition is truthy. Optionally accepts default callback if condition is falsy.
+
+##### `builder.where(field: string, value: any): Builder`
+Adds a simple `field` equals `value` filter.
+
+##### `builder.where(field: string, operator: string, value: any): Builder`
+Adds a filter where `field` is compared to `value` with the given operator.
+
+`operator` can be one of `=`, `!=`, `<`, `<=`, `>=`, `>`.
+
+##### `builder.where(callback: (builder: Builder) => void): Builder`
+This syntax calls `whereNested()` under the hood when a callback is provided.
+
+##### `builder.whereBetween(field: string, range: [any, any]): Builder`
+Adds a filter where the `field` must be between the `range` values.
+
+##### `builder.whereIn(field: string, values: any[]): Builder`
+Adds a filter where the `field` must be one of the given `values`.
+
+##### `builder.whereNested(callback: (builder: Builder) => void): Builder`
+Adds a filter with further filters nested inside.
+
+##### `builder.whereNot(field: string, value: any): Builder`
+Adds a filter where the `field` must not be equal to `value`.
+
+##### `builder.whereNotIn(): Builder`
+Adds a filter where the `field` must not be one of the given `values`. 
+
+##### `builder.whereRaw(value: any): Builder`
+Adds a filter as the exact `value` given.
