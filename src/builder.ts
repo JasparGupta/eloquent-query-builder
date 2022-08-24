@@ -46,10 +46,6 @@ export default class Builder {
     value ??= operator;
     operator = operator === value ? '=' : operator;
 
-    if (!this.operators.includes(operator)) {
-      throw new RangeError(`Operator [${operator}] not supported`);
-    }
-
     const where: WhereBasic = { boolean, field, operator, type: 'Basic', value };
 
     this.wheres.push(where);
