@@ -14,8 +14,8 @@ export default class Builder {
     this.grammar = grammar;
   }
 
-  public clone(): Builder {
-    return tap(Builder.make(), builder => {
+  public clone(): this {
+    return tap(Builder.make() as this, builder => {
       builder.wheres = this.wheres.map(where => {
         return where.type === 'Nested'
           ? { ...where, value: where.value.clone() }
