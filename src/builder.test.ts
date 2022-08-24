@@ -3,6 +3,34 @@ import Grammar from './grammar';
 import { Bool, Operator, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
 
 describe('Builder', () => {
+  describe('clone', () => {
+    test('returns a copy of the query', () => {
+      const builder = Builder.make();
+
+      builder
+        .where('foo', 'bar') // 0
+        .whereIn('baz', [1, 2, 3]) // 1
+        .whereNested(query => { // 2
+          query.where('test', true);
+        });
+
+      const clone = builder.clone();
+
+      clone.where('clone', true); // 3
+
+      expect(clone).not.toBe(builder);
+
+      expect(builder.wheres[3]).toBeUndefined();
+      expect(clone.wheres[3]).not.toBeUndefined();
+
+      expect(clone.wheres[0]).toEqual(builder.wheres[0]);
+      expect(clone.wheres[0]).not.toBe(builder.wheres[0]);
+
+      expect(clone.wheres[2].value).toBeInstanceOf(Builder);
+      expect(clone.wheres[2]).not.toBe(builder.wheres[2]);
+    });
+  });
+
   describe('orWhere', () => {
     test('adds a "Basic" clause as an "or" boolean', () => {
       const builder = Builder.make();

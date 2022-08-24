@@ -14,6 +14,16 @@ export default class Builder {
     this.grammar = grammar;
   }
 
+  public clone(): Builder {
+    return tap(Builder.make(), builder => {
+      builder.wheres = this.wheres.map(where => {
+        return where.type === 'Nested'
+          ? { ...where, value: where.value.clone() }
+          : { ...where };
+      });
+    });
+  }
+
   public orWhere(field: NestedCallback | string, operator: Operator | any, value?: any) {
     return this.where(field, operator, value, 'or');
   }
