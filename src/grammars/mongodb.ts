@@ -56,7 +56,7 @@ export default class MongoDB extends Grammar {
 
   protected whereBasic(query: Builder, where: WhereBasic): Compiled<WhereBasic> {
     const { field, value } = where;
-    const operator = this.comparisons[where.operator];
+    const operator = this.comparisons[where.operator] ?? where.operator;
 
     const compiled = operator === '$eq'
       ? { [field]: value }
