@@ -7,7 +7,7 @@ import Builder from '../builder';
 type Compiled<T> = T & { compiled: Filter<any> }
 
 export default class MongoDB extends Grammar {
-  protected comparisons: Record<Operator, string> = {
+  protected readonly comparisons: Record<Operator, string> = {
     '=': '$eq',
     '!=': '$ne',
     '<': '$lt',
@@ -16,7 +16,7 @@ export default class MongoDB extends Grammar {
     '>=': '$gte',
   };
 
-  protected logicals: Record<Bool, string> = {
+  protected readonly logicals: Record<Bool, string> = {
     'and': '$and',
     'and not': '$not',
     'or': '$or',
