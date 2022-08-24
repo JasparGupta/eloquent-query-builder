@@ -65,13 +65,15 @@ describe('MongoDB grammar', () => {
   });
 
   describe('whereBasic', () => {
-    test.each<[Operator, string]>([
+    test.each<[Operator | string, string]>([
       ['=', '$eq'],
       ['!=', '$ne'],
       ['<', '$lt'],
       ['<=', '$lte'],
       ['>', '$gt'],
       ['>=', '$gte'],
+      ['$exists', '$exists'],
+      ['$elemMatch', '$elemMatch'],
     ])('compiles "Basic" where', (operator, compiledOperator) => {
       const builder = Builder.make();
       const grammar = new MongoDB();
