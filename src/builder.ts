@@ -48,7 +48,7 @@ export default class Builder {
 
     const where: WhereBasic = { boolean, field, operator, type: 'Basic', value };
 
-    this.wheres.push(where);
+    this.wheres = [...this.wheres, where];
 
     return this;
   }
@@ -56,7 +56,7 @@ export default class Builder {
   public whereBetween(field: string, range: WhereBetween['value'], boolean: Bool = 'and'): this {
     const where: WhereBetween = { boolean, field, type: 'Between', value: range };
 
-    this.wheres.push(where);
+    this.wheres = [...this.wheres, where];
 
     return this;
   }
@@ -64,7 +64,7 @@ export default class Builder {
   public whereIn(field: string, values: any[], boolean: Bool = 'and'): this {
     const where: WhereIn = { boolean, field, type: 'In', value: values };
 
-    this.wheres.push(where);
+    this.wheres = [...this.wheres, where];
 
     return this;
   }
@@ -72,7 +72,7 @@ export default class Builder {
   public whereNested(callback: NestedCallback, boolean: Bool = 'and'): this {
     const where: WhereNested = { boolean, type: 'Nested', value: tap(Builder.make(), callback) };
 
-    this.wheres.push(where);
+    this.wheres = [...this.wheres, where];
 
     return this;
   }
@@ -84,13 +84,13 @@ export default class Builder {
   public whereNotIn(field: string, values: any[], boolean: Bool = 'and'): this {
     const where: WhereIn = { boolean, field, type: 'NotIn', value: values };
 
-    this.wheres.push(where);
+    this.wheres = [...this.wheres, where];
 
     return this;
   }
 
   public whereRaw<T = any>(value: T, boolean: Bool = 'and'): this {
-    this.wheres.push({ boolean, type: 'Raw', value });
+    this.wheres = [...this.wheres, { boolean, type: 'Raw', value }];
 
     return this;
   }
