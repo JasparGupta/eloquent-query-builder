@@ -93,7 +93,7 @@ export default class Builder {
     return this;
   }
 
-  public whereRaw(value: any, boolean: Bool = 'and'): this {
+  public whereRaw<T = any>(value: T, boolean: Bool = 'and'): this {
     this.wheres.push({ boolean, type: 'Raw', value });
 
     return this;
