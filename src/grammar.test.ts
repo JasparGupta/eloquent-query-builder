@@ -1,11 +1,12 @@
 import Grammar from './grammar';
 import Builder from './builder';
-import { WhereBasic, WhereIn, WhereNested, WhereRaw } from './types';
+import { WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
 
 describe('Grammar', () => {
   describe('compile', () => {
     test('compiles where clauses', () => {
       const whereBasic = jest.fn();
+      const whereBetween = jest.fn();
       const whereIn = jest.fn();
       const whereNested = jest.fn();
       const whereNotIn = jest.fn();
@@ -14,6 +15,10 @@ describe('Grammar', () => {
       const TestGrammar = class extends Grammar {
         protected whereBasic(query: Builder, where: WhereBasic) {
           return whereBasic();
+        }
+
+        protected whereBetween(query: Builder, where: WhereBetween) {
+          return whereBetween();
         }
 
         protected whereIn(query: Builder, where: WhereIn) {
@@ -38,6 +43,8 @@ describe('Grammar', () => {
       builder
         // Should trigger whereBasic.
         .where('basic', true)
+        // Should trigger whereBetween.
+        .whereBetween('between', [1, 10])
         // Should trigger whereIn.
         .whereIn('in', [1, 2, 3])
         // Should trigger whereNested.
@@ -52,6 +59,7 @@ describe('Grammar', () => {
       grammar.compile(builder);
 
       expect(whereBasic).toHaveBeenCalled();
+      expect(whereBetween).toHaveBeenCalled();
       expect(whereIn).toHaveBeenCalled();
       expect(whereNested).toHaveBeenCalled();
       expect(whereNotIn).toHaveBeenCalled();
