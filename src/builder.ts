@@ -25,8 +25,24 @@ export default class Builder {
     });
   }
 
-  public orWhere(field: NestedCallback | string, operator: Operator | any, value?: any) {
+  public orWhere(field: NestedCallback | string, operator: Operator | any, value?: any): this {
     return this.where(field, operator, value, 'or');
+  }
+
+  public orWhereBetween(field: string, range: WhereBetween['value']): this {
+    return this.whereBetween(field, range, 'or');
+  }
+
+  public orWhereIn(field: string, values: any[]): this {
+    return this.whereIn(field, values, 'or');
+  }
+
+  public orWhereNot(field: string, value: any): this {
+    return this.whereNot(field, value, 'or not');
+  }
+
+  public orWhereNotIn(field: string, values: any[]): this {
+    return this.whereNotIn(field, values, 'or not');
   }
 
   public setGrammar(grammar: Grammar): this {

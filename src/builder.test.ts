@@ -49,6 +49,75 @@ describe('Builder', () => {
     });
   });
 
+  describe('orWhereBetween', () => {
+    test('adds a "Between" clause with an "or" boolean', () => {
+      const builder = Builder.make();
+
+      const result = builder.orWhereBetween('foo', ['bar', 'baz']);
+      const [where] = builder.wheres;
+
+      expect(result).toBe(builder);
+      expect(where).toEqual<WhereBetween>({
+        boolean: 'or',
+        field: 'foo',
+        type: 'Between',
+        value: ['bar', 'baz'],
+      });
+    });
+  });
+
+  describe('orWhereIn', () => {
+    test('adds an In clause with an "or" boolean', () => {
+      const builder = Builder.make();
+
+      const result = builder.orWhereIn('foo', ['bar', 'baz']);
+      const [where] = builder.wheres;
+
+      expect(result).toBe(builder);
+      expect(where).toEqual<WhereIn>({
+        boolean: 'or',
+        field: 'foo',
+        type: 'In',
+        value: ['bar', 'baz']
+      });
+    });
+  });
+
+  describe('orWhereNot', () => {
+    test('adds a "Basic" "!=" clause', () => {
+      const builder = Builder.make();
+
+      const result = builder.orWhereNot('foo', 'bar');
+      const [where] = builder.wheres;
+
+      expect(result).toBe(builder);
+      expect(where).toEqual<WhereBasic>({
+        boolean: 'or not',
+        field: 'foo',
+        operator: '!=',
+        type: 'Basic',
+        value: 'bar',
+      });
+    });
+  });
+
+  describe('orWhereNotIn', () => {
+    test('adds an NotIn clause with an "or not" boolean', () => {
+      const builder = Builder.make();
+
+      const result = builder.orWhereNotIn('foo', ['bar', 'baz']);
+      const [where] = builder.wheres;
+
+      expect(result).toBe(builder);
+      expect(where).toEqual<WhereIn>({
+        boolean: 'or not',
+        field: 'foo',
+        type: 'NotIn',
+        value: ['bar', 'baz']
+      });
+    });
+  });
+
   describe('setGrammar', () => {
     test('sets the grammar property on the builder instance', () => {
       // @ts-ignore
