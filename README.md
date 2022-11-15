@@ -1,6 +1,6 @@
 # eloquent-query-builder
 
-This is a query builder based off of Laravel's Eloquent query builder.
+This is a query builder inspired by Laravel's Eloquent query builder.
 
 **What this is not**: This does not contain any database connectivity features.
 
