@@ -33,13 +33,20 @@ describe('MongoDB grammar', () => {
         .where('name', 'John')
         .where('age', '>', 18)
         .whereIn('interestIds', [1, 2, 3])
-        .whereNested(query => {
+        .where(query => {
           query
             .where('foo', 'bar')
-            .whereNested(query => {
+            .where(query => {
               query
                 .where('nested1', true)
                 .orWhere('nested2', false);
+            })
+            .where(query => {
+              query
+                .where('nested3', '$exists', false)
+                .when(true, query => {
+                  query.orWhereIn('nested3', [1, 2, 3]);
+                });
             });
         });
 
@@ -54,9 +61,15 @@ describe('MongoDB grammar', () => {
           {
             $and: [
               { foo: 'bar' },
-              { $or: [{ nested1: true }, { nested2: false }] }
+              { $or: [{ nested1: true }, { nested2: false }] },
+              {
+                $or: [
+                  { nested3: { $exists: false } },
+                  { nested3: { $in: [1, 2, 3] } }
+                ]
+              }
             ]
-          }
+          },
         ]
       };
 

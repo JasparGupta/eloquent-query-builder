@@ -43,7 +43,7 @@ export default class MongoDB extends Grammar {
       const filter = { [this.logicalOperator(where)]: [compiled] };
 
       return mergeWith(filters, filter, (value, source) => {
-        if ((type === 'Nested' || type === 'Basic' && where.boolean !== 'and') && Array.isArray(value)) {
+        if ((type === 'Nested' || where.boolean !== 'and') && Array.isArray(value)) {
           return value.concat(source);
         }
       });
