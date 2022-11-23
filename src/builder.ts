@@ -51,7 +51,7 @@ export default class Builder {
     return this;
   }
 
-  public toQuery<T = any>(): T {
+  public toQuery(): any {
     if (!this.grammar) {
       throw new ReferenceError('No grammar has been set');
     }
