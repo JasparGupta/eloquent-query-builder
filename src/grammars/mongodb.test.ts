@@ -109,7 +109,7 @@ describe('MongoDB grammar', () => {
   });
 
   describe('whereBetween', () => {
-    test('', () => {
+    test('compiles "Between" where', () => {
       const builder = Builder.make();
       const grammar = new MongoDB();
 
@@ -128,26 +128,25 @@ describe('MongoDB grammar', () => {
     });
   });
 
-  describe.each<[string, WhereIn['type'], string]>([
-    ['whereIn', 'In', '$in'],
-    ['whereNotIn', 'NotIn', '$nin']
-  ])('%s', (method, type, operator) => {
-    test(`compiles "${type}" where`, () => {
+  describe('whereIn', () => {
+    test.each<Bool>(['and', 'and not'])('%# compiles "In" where', (boolean) => {
       const builder = Builder.make();
       const grammar = new MongoDB();
       const values = [1, 2, 3];
 
-      builder[method]('foo', values);
+      builder.whereIn('foo', values, boolean);
 
       const [where] = builder.wheres;
 
-      const result = grammar[method](builder, where);
+      const result = grammar.whereIn(builder, where);
+
+      const operator = boolean === 'and not' ? '$nin' : '$in';
 
       expect(result).toEqual({
-        boolean: 'and',
+        boolean: boolean,
         compiled: { foo: { [operator]: values } },
         field: 'foo',
-        type,
+        type: 'In',
         value: where.value,
       });
     });

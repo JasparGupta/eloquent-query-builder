@@ -72,19 +72,15 @@ export default class MongoDB extends Grammar {
   }
 
   protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
-    const { field, value } = where;
+    const { boolean, field, value } = where;
 
-    return { ...where, compiled: { [field]: { $in: value } } };
+    const operator = boolean === 'and not' ? '$nin' : '$in';
+
+    return { ...where, compiled: { [field]: { [operator]: value } } };
   }
 
   protected whereNested(query: Builder, where: WhereNested): Compiled<WhereNested> {
     return { ...where, compiled: this.compile(where.value) };
-  }
-
-  protected whereNotIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
-    const { field, value } = where;
-
-    return { ...where, compiled: { [field]: { $nin: value } } };
   }
 
   protected whereRaw(query: Builder, where: WhereRaw): Compiled<WhereRaw> {

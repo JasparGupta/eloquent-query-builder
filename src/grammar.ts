@@ -18,7 +18,5 @@ export default abstract class Grammar {
 
   protected abstract whereNested(query: Builder, where: WhereNested);
 
-  protected abstract whereNotIn(query: Builder, where: WhereIn);
-
   protected abstract whereRaw(query: Builder, where: WhereRaw);
 }
