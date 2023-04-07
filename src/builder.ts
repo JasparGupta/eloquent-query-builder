@@ -3,6 +3,14 @@ import type Grammar from './grammar';
 import { Bool, NestedCallback, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested } from './types';
 import { operators } from './constants';
 
+export interface Filter<T = unknown, Q extends Record<string, any> = Record<string, any>> {
+  (builder: Builder, value: T, query: Q): void,
+}
+
+export type Filters<T extends Record<string, any>> = {
+  [K in keyof T]: Filter<T[K], T>;
+} & Record<string, Filter<any, T>>;
+
 export default class Builder {
   public wheres: Where[] = [];
 
@@ -12,6 +20,14 @@ export default class Builder {
 
   constructor(grammar?: Grammar) {
     this.grammar = grammar;
+  }
+
+  public apply<T extends Record<string, any> = Record<string, any>>(filters: Filters<T>, params: T): this {
+    Object.entries(filters).forEach(([key, filter]) => {
+      filter(this, params[key], params);
+    });
+
+    return this;
   }
 
   public clone(): this {

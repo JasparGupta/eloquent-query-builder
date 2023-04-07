@@ -1,8 +1,56 @@
 import Builder from './builder';
 import Grammar from './grammar';
-import { Bool, Operator, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
+import { Bool, Filters, Operator, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
 
 describe('Builder', () => {
+  describe('apply', () => {
+    test('bulk apply filters', () => {
+      const builder = Builder.make();
+
+      interface Query {
+        foo: string,
+        bar: number,
+      }
+
+      const filters: Filters<Query> = {
+        foo: (query, value) => query.where('foo', value),
+        bar: (query, value) => query.where('bar', '>=', value),
+        baz: (query, value) => query.whereNot('baz', false),
+      };
+
+      builder.apply(filters, {
+        foo: 'lorem',
+        bar: 10,
+      });
+
+      expect(builder.wheres.length).toBe(3);
+
+      const [foo, bar, baz] = builder.wheres as WhereBasic[];
+
+      expect(foo).toEqual(
+        expect.objectContaining({
+          field: 'foo',
+          value: 'lorem'
+        })
+      );
+
+      expect(bar).toEqual(
+        expect.objectContaining({
+          field: 'bar',
+          value: 10
+        })
+      );
+
+      expect(baz).toEqual(
+        expect.objectContaining({
+          field: 'baz',
+          operator: '!=',
+          value: false
+        })
+      );
+    });
+  });
+
   describe('clone', () => {
     test('returns a copy of the query', () => {
       const builder = Builder.make();
