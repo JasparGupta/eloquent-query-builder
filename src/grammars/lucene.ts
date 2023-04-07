@@ -2,11 +2,11 @@ import type { Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } 
 import type Builder from '../builder';
 import Grammar from '../grammar';
 
-type CompiledWhere = Where & { compiled: string | null };
+type Compiled<T> = T & { compiled: string | null };
 
 export default class LuceneGrammar extends Grammar {
   public compile(builder: Builder): string {
-    const wheres: CompiledWhere[] = super.compile(builder);
+    const wheres: Compiled<Where>[] = super.compile(builder);
     const first = wheres.shift();
 
     return wheres
@@ -17,7 +17,7 @@ export default class LuceneGrammar extends Grammar {
       );
   }
 
-  protected whereBasic(_query: Builder, where: WhereBasic): CompiledWhere {
+  protected whereBasic(_query: Builder, where: WhereBasic): Compiled<WhereBasic> {
     const { field, operator, value } = where;
 
     if (/^\*/.test(value)) {
@@ -42,13 +42,13 @@ export default class LuceneGrammar extends Grammar {
     return { ...where, compiled };
   }
 
-  protected whereBetween(_query: Builder, where: WhereBetween): CompiledWhere {
+  protected whereBetween(_query: Builder, where: WhereBetween): Compiled<WhereBetween> {
     const [from, to] = where.value;
 
     return { ...where, compiled: `${where.field}:[${from} TO ${to}]` };
   }
 
-  protected whereIn(query: Builder, where: WhereIn): CompiledWhere {
+  protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
     const { boolean, field, value: values } = where;
     const operator = boolean === 'and not' ? '!=' : '=';
 
@@ -63,11 +63,11 @@ export default class LuceneGrammar extends Grammar {
     return { ...where, compiled: `(${compiled})` };
   }
 
-  protected whereNested(_query: Builder, where: WhereNested): CompiledWhere {
+  protected whereNested(_query: Builder, where: WhereNested): Compiled<WhereNested> {
     return { ...where, compiled: `(${this.compile(where.value as Builder)})` };
   }
 
-  protected whereRaw(_query: Builder, where: WhereRaw): CompiledWhere {
+  protected whereRaw(_query: Builder, where: WhereRaw): Compiled<WhereRaw> {
     return { ...where, compiled: where.value };
   }
 }

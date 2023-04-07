@@ -2,13 +2,13 @@ import type { Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested, W
 import type Builder from '../builder';
 import Grammar from '../grammar';
 
-type Compiled<T> = T & { compiled: string };
+export type Compiled<T> = T & { compiled: string };
 
 export default class AlgoliaGrammar extends Grammar {
   protected readonly operators: Operator[] = ['=', '!=', '<', '>', '<=', '>='];
 
   public compile(query: Builder): string {
-    const wheres: Compiled<Where>[] = super.compile(query);
+    const wheres = (super.compile(query) as Compiled<Where>[]).filter(where => where.compiled);
     const first = wheres.shift();
 
     return wheres.reduce((result, where) => {
@@ -21,10 +21,17 @@ export default class AlgoliaGrammar extends Grammar {
   protected whereBasic(query: Builder, where: WhereBasic) {
     const { boolean, field, operator, type, value } = where;
 
+    if (/^\d+$/.test(value)) {
+      return {
+        ...where,
+        compiled: `${field} ${operator} ${value}`,
+      }
+    }
+
     return {
       ...where,
       boolean: operator === '!=' ? (boolean === 'and' ? 'and not' : 'or not') : boolean,
-      compiled: operator === '=' ? `${field}:${value}` : `${field} ${operator} ${value}`,
+      compiled: `${field}:${value}`,
     };
   }
 
@@ -34,12 +41,15 @@ export default class AlgoliaGrammar extends Grammar {
     return { ...where, compiled: `${field}: ${from} TO ${to}` };
   }
 
-  protected whereIn(query: Builder, where: WhereIn): WhereIn | Compiled<WhereIn> {
+  protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
     const { boolean, field, value: values } = where;
 
-    if (!values.length) return where;
-
-    return { ...where, compiled: `(${values.map(value => `${field}:${value}`).join(` ${boolean.toUpperCase()} `)})` };
+    return {
+      ...where,
+      compiled: values.length
+        ? `(${values.map(value => `${field}:${value}`).join(` ${boolean.toUpperCase()} `)})`
+        : null
+    };
   }
 
   protected whereNested(query: Builder, where: WhereNested): Compiled<WhereNested> {

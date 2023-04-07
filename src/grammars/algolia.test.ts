@@ -1,7 +1,6 @@
-// @ts-nocheck
 import Builder from '../builder';
-import AlgoliaGrammar from './algolia';
-import { Bool, WhereBetween } from '../types';
+import AlgoliaGrammar, { Compiled } from './algolia';
+import { Bool, WhereBasic, WhereBetween } from '../types';
 
 describe('AlgoliaGrammar', () => {
   describe('compile', () => {
@@ -26,11 +25,12 @@ describe('AlgoliaGrammar', () => {
   });
 
   describe('whereBasic', () => {
-    test.each<[Parameters<typeof Builder.prototype.where>, string]>([
-      [['foo', 'bar'], 'foo:bar'],
-      [['foo', '=', 'bar'], 'foo:bar'],
-      [['foo', '!=', 'bar'], 'foo != bar'],
-      [['foo', '<=', 10], 'foo <= 10'],
+    test.each<[Parameters<typeof Builder.prototype.where>, Partial<Compiled<WhereBasic>>]>([
+      [['foo', 'bar'], { boolean: 'and', compiled: 'foo:bar' }],
+      [['foo', '=', 'bar'], { boolean: 'and', compiled: 'foo:bar' }],
+      [['foo', '!=', 'bar'], { boolean: 'and not', compiled: 'foo:bar' }],
+      [['foo', '!=', 10], { boolean: 'and', compiled: 'foo != 10' }],
+      [['foo', '<=', 10], { boolean: 'and', compiled: 'foo <= 10' }],
     ])('%# compiles "Basic" where', (args, expected) => {
       const builder = new Builder();
       const grammar = new AlgoliaGrammar();
@@ -39,9 +39,12 @@ describe('AlgoliaGrammar', () => {
 
       const [where] = builder.wheres;
 
-      const { compiled } = grammar.whereBasic(builder, where);
+      // @ts-ignore
+      const actual = grammar.whereBasic(builder, where);
 
-      expect(compiled).toBe(expected);
+      expect(actual).toEqual(
+        expect.objectContaining(expected)
+      );
     });
   });
 
@@ -54,7 +57,10 @@ describe('AlgoliaGrammar', () => {
 
       const [where] = builder.wheres;
 
-      const { compiled } = grammar.whereBetween(builder, where);
+      const {
+        compiled
+        // @ts-ignore
+      } = grammar.whereBetween(builder, where);
 
       expect(compiled).toBe('foo: 1 TO 10');
     });
@@ -69,7 +75,10 @@ describe('AlgoliaGrammar', () => {
 
       const [where] = builder.wheres;
 
-      const { compiled } = grammar.whereIn(builder, where);
+      const {
+        compiled
+        // @ts-ignore
+      } = grammar.whereIn(builder, where);
 
       const bool = boolean.toUpperCase();
 
@@ -90,7 +99,10 @@ describe('AlgoliaGrammar', () => {
 
       const [where] = builder.wheres;
 
-      const { compiled } = grammar.whereNested(builder, where);
+      const {
+        compiled
+        // @ts-ignore
+      } = grammar.whereNested(builder, where);
 
       expect(compiled).toBe('(foo:bar OR foo:baz)');
     });
@@ -105,7 +117,10 @@ describe('AlgoliaGrammar', () => {
 
       const [where] = builder.wheres;
 
-      const { compiled } = grammar.whereRaw(builder, where);
+      const {
+        compiled
+        // @ts-ignore
+      } = grammar.whereRaw(builder, where);
 
       expect(compiled).toBe('foo:bar AND NOT baz:foo');
     });

@@ -27,7 +27,7 @@ export default class MongoDB extends Grammar {
     if (!query.wheres.length) return {};
 
     if (query.wheres.length === 1) {
-      const [filter] = super.compile(query);
+      const [filter] = super.compile(query) as Compiled<Where>[];
 
       return filter.compiled;
     }
@@ -37,7 +37,7 @@ export default class MongoDB extends Grammar {
     // Second where dictates the first where boolean.
     first.boolean = second.boolean;
 
-    const wheres: Array<Compiled<Where>> = super.compile(query);
+    const wheres: Compiled<Where>[] = super.compile(query);
 
     return wheres.reduce<Filter<any>>((filters, { compiled, type, ...where }) => {
       const filter = { [this.logicalOperator(where)]: [compiled] };
