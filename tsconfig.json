@@ -5,6 +5,7 @@
         "module": "commonjs",
         "outDir": "dist",
         "target": "ES6",
+        "skipLibCheck": true,
         "sourceMap": true
     },
     "exclude": [
