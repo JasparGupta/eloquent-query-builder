@@ -25,13 +25,13 @@ export default class AlgoliaGrammar extends Grammar {
       return {
         ...where,
         compiled: `${field} ${operator} ${value}`,
-      }
+      };
     }
 
     return {
       ...where,
       boolean: operator === '!=' ? (boolean === 'and' ? 'and not' : 'or not') : boolean,
-      compiled: `${field}:${value}`,
+      compiled: `${field}:${/\s/.test(value) ? `"${value}"` : value}`,
     };
   }
 

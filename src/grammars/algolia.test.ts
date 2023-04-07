@@ -27,6 +27,7 @@ describe('AlgoliaGrammar', () => {
   describe('whereBasic', () => {
     test.each<[Parameters<typeof Builder.prototype.where>, Partial<Compiled<WhereBasic>>]>([
       [['foo', 'bar'], { boolean: 'and', compiled: 'foo:bar' }],
+      [['foo', 'Hello world!'], { boolean: 'and', compiled: 'foo:"Hello world!"' }],
       [['foo', '=', 'bar'], { boolean: 'and', compiled: 'foo:bar' }],
       [['foo', '!=', 'bar'], { boolean: 'and not', compiled: 'foo:bar' }],
       [['foo', '!=', 10], { boolean: 'and', compiled: 'foo != 10' }],
