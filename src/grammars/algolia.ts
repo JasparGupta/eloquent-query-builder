@@ -43,11 +43,13 @@ export default class AlgoliaGrammar extends Grammar {
 
   protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
     const { boolean, field, value: values } = where;
+    const join = boolean.includes('not') ? 'OR NOT' : 'OR';
 
     return {
       ...where,
+      boolean: boolean.includes('or') ? 'or' : 'and',
       compiled: values.length
-        ? `(${values.map(value => `${field}:${value}`).join(` ${boolean.toUpperCase()} `)})`
+        ? `(${values.map(value => `${field}:${value}`).join(` ${join} `)})`
         : null
     };
   }

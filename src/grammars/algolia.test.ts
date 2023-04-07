@@ -68,7 +68,7 @@ describe('AlgoliaGrammar', () => {
   });
 
   describe('whereIn', () => {
-    test.each<Bool>(['and', 'and not'])('%# compiles "In" where', (boolean) => {
+    test.each<Bool>(['and', 'and not', 'or', 'or not'])('%# compiles "In" where', (boolean) => {
       const builder = new Builder();
       const grammar = new AlgoliaGrammar();
 
@@ -76,14 +76,17 @@ describe('AlgoliaGrammar', () => {
 
       const [where] = builder.wheres;
 
-      const {
-        compiled
-        // @ts-ignore
-      } = grammar.whereIn(builder, where);
+      // @ts-ignore
+      const actual = grammar.whereIn(builder, where);
 
-      const bool = boolean.toUpperCase();
-
-      expect(compiled).toBe(`(foo:1 ${bool} foo:5 ${bool} foo:10)`);
+      expect(actual).toEqual(
+        expect.objectContaining({
+          boolean: boolean.includes('or') ? 'or' : 'and',
+          compiled: boolean.includes('not')
+            ? `(foo:1 OR NOT foo:5 OR NOT foo:10)`
+            : `(foo:1 OR foo:5 OR foo:10)`,
+        })
+      );
     });
   });
 

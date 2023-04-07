@@ -125,11 +125,7 @@ export default class Builder {
   }
 
   public whereNotIn(field: string, values: any[], boolean: Bool = 'and not'): this {
-    const where: WhereIn = { boolean, field, type: 'In', value: values };
-
-    this.wheres = [...this.wheres, where];
-
-    return this;
+    return this.whereIn(field, values, 'and not');
   }
 
   public whereRaw<T = any>(value: T, boolean: Bool = 'and'): this {
