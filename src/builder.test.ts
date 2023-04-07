@@ -160,7 +160,7 @@ describe('Builder', () => {
       expect(where).toEqual<WhereIn>({
         boolean: 'or not',
         field: 'foo',
-        type: 'NotIn',
+        type: 'In',
         value: ['bar', 'baz']
       });
     });
@@ -270,11 +270,11 @@ describe('Builder', () => {
     });
   });
 
-  describe.each<[string, WhereIn['type']]>([
-    ['whereIn', 'In'],
-    ['whereNotIn', 'NotIn'],
-  ])('%s', (method, type) => {
-    test(`adds an "${type}" clause`, () => {
+  describe.each<[string, Bool]>([
+    ['whereIn', 'and'],
+    ['whereNotIn', 'and not'],
+  ])('%s', (method, boolean) => {
+    test(`adds an "In" clause`, () => {
       const builder = Builder.make();
 
       const values = [1, 2, 3];
@@ -283,9 +283,9 @@ describe('Builder', () => {
 
       expect(result).toBe(builder);
       expect(where).toEqual<WhereIn>({
-        boolean: 'and',
+        boolean,
         field: 'foo',
-        type,
+        type: 'In',
         value: values,
       });
     });

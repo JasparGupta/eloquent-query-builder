@@ -9,7 +9,6 @@ describe('Grammar', () => {
       const whereBetween = jest.fn();
       const whereIn = jest.fn();
       const whereNested = jest.fn();
-      const whereNotIn = jest.fn();
       const whereRaw = jest.fn();
 
       const TestGrammar = class extends Grammar {
@@ -29,10 +28,6 @@ describe('Grammar', () => {
           return whereNested();
         }
 
-        protected whereNotIn(query: Builder, where: WhereIn) {
-          return whereNotIn();
-        }
-
         protected whereRaw(query: Builder, where: WhereRaw) {
           return whereRaw();
         }
@@ -49,8 +44,6 @@ describe('Grammar', () => {
         .whereIn('in', [1, 2, 3])
         // Should trigger whereNested.
         .whereNested(() => void (0))
-        // Should trigger whereNotIn.
-        .whereNotIn('notin', [4, 5, 6])
         // Should trigger whereRaw.
         .whereRaw({ raw: 1 });
 
@@ -62,7 +55,6 @@ describe('Grammar', () => {
       expect(whereBetween).toHaveBeenCalled();
       expect(whereIn).toHaveBeenCalled();
       expect(whereNested).toHaveBeenCalled();
-      expect(whereNotIn).toHaveBeenCalled();
       expect(whereRaw).toHaveBeenCalled();
     });
   });

@@ -124,8 +124,8 @@ export default class Builder {
     return this.where(field, '!=', value, boolean);
   }
 
-  public whereNotIn(field: string, values: any[], boolean: Bool = 'and'): this {
-    const where: WhereIn = { boolean, field, type: 'NotIn', value: values };
+  public whereNotIn(field: string, values: any[], boolean: Bool = 'and not'): this {
+    const where: WhereIn = { boolean, field, type: 'In', value: values };
 
     this.wheres = [...this.wheres, where];
 
