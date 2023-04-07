@@ -14,13 +14,14 @@ describe('AlgoliaGrammar', () => {
         .where('foo', 'bar')
         .whereBetween('between', [1, 10])
         .whereIn('in', [1, 2, 3])
+        .whereNotIn('not_in', [4, 5])
         .whereNested(query => {
           query
             .where('nest1', 'foo')
             .orWhere('nest1', 'bar');
         });
 
-      expect(builder.toQuery()).toBe('foo:bar AND between: 1 TO 10 AND (in:1 OR in:2 OR in:3) AND (nest1:foo OR nest1:bar)');
+      expect(builder.toQuery()).toBe('foo:bar AND between: 1 TO 10 AND (in:1 OR in:2 OR in:3) AND (not_in:4 OR NOT not_in:5) AND (nest1:foo OR nest1:bar)');
     });
   });
 
