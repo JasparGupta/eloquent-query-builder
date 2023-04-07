@@ -112,7 +112,7 @@ export default class Builder {
     return this;
   }
 
-  public whereNested(callback: NestedCallback, boolean: Bool = 'and'): this {
+  public whereNested(callback: NestedCallback, boolean: Extract<Bool, 'and' | 'or'> = 'and'): this {
     const where: WhereNested = { boolean, type: 'Nested', value: tap(Builder.make(), callback) };
 
     this.wheres = [...this.wheres, where];
