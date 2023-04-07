@@ -20,7 +20,7 @@ describe('AlgoliaGrammar', () => {
             .orWhere('nest1', 'bar');
         });
 
-      expect(builder.toQuery()).toBe('foo:bar AND between: 1 TO 10 AND (in:1 AND in:2 AND in:3) AND (nest1:foo OR nest1:bar)');
+      expect(builder.toQuery()).toBe('foo:bar AND between: 1 TO 10 AND (in:1 OR in:2 OR in:3) AND (nest1:foo OR nest1:bar)');
     });
   });
 
