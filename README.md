@@ -58,13 +58,54 @@ Currently this package ships with the following grammars:
 
 Optionally takes a `Grammar` instance as an argument.
 
+```ts
+const builder = new Builder();
+// or
+const builder = new Builder(new MongoDBGrammar());
+```
+
 #### Static methods
 
 ##### `Builder.make(grammar?: Grammar): Builder`
 
 Returns a new `Builder` instance.
 
+```ts
+const builder = Builder.make();
+// or
+const builder = Builder.make(new MongoDBGrammar());
+```
+
 #### Instance methods
+
+##### `builder.apply(filters: Record<string, Function>, values: Record<string, any>)`
+
+Bulk applies filters.
+
+```ts
+// filters.ts
+export const foo = (builder, value) => builder.where('foo', value);
+
+export const baz = (builder, value, params) => {
+  builder
+    .where('baz', '>=', value)
+    .when(params.isAdmin, builder => builder.where('admin', true));
+};
+
+// Will still be called even if `params` has no `deleted` property.
+export const deleted = (builder) => builder.whereNot('deleted', true);
+
+// other-file.ts
+import * as filters from './filters';
+
+const params = {
+  baz: 10,
+  foo: 'bar',
+  isAdmin: true,
+};
+
+const builder = Builder.make().apply(filters, params);
+```
 
 ##### `builder.orWhere(field: string, value: any): Builder`
 
