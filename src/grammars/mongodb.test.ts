@@ -143,7 +143,7 @@ describe('MongoDB grammar', () => {
       const operator = boolean === 'and not' ? '$nin' : '$in';
 
       expect(result).toEqual({
-        boolean: boolean,
+        boolean: boolean.includes('or') ? 'or' : 'and',
         compiled: { foo: { [operator]: values } },
         field: 'foo',
         type: 'In',
