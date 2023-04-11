@@ -74,7 +74,7 @@ export default class MongoDB extends Grammar {
   protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
     const { boolean, field, value } = where;
 
-    const operator = boolean === 'and not' ? '$nin' : '$in';
+    const operator = boolean.includes('not') ? '$nin' : '$in';
 
     return {
       ...where,
