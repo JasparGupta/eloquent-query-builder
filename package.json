@@ -1,47 +1,48 @@
 {
-    "name": "@jaspargupta/eloquent-query-builder",
-    "version": "1.4.5",
-    "description": "",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "files": [
-        "dist/**/*"
-    ],
-    "scripts": {
-        "build": "tsc",
-        "build:watch": "npm run build -- --watch",
-        "clean": "rm -rf ./dist",
-        "prepublishOnly": "npm run test && npm run clean && npm run build",
-        "test": "jest",
-        "test:watch": "npm run test -- --watchAll"
-    },
-    "keywords": [
-        "eloquent",
-        "mongodb",
-        "orm",
-        "query builder"
-    ],
-    "author": "Jaspar Gupta",
-    "license": "MIT",
-    "dependencies": {
-        "lodash.mergewith": "^4.6.2"
-    },
-    "peerDependencies": {
-        "mongodb": "^4.8.1"
-    },
-    "devDependencies": {
-        "@types/jest": "^28.1.6",
-        "@types/lodash.merge": "^4.6.7",
-        "@types/node": "^18.7.3",
-        "jest": "^28.1.3",
-        "ts-jest": "^28.0.7",
-        "typescript": "^5.0.4"
-    },
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/JasparGupta/eloquent-query-builder.git"
-    }
+  "name": "@jaspargupta/eloquent-query-builder",
+  "version": "1.4.5",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "build:watch": "npm run build -- --watch",
+    "prepublishOnly": "npm run test && npm run build",
+    "test": "jest",
+    "test:watch": "npm run test -- --watchAll"
+  },
+  "keywords": [
+    "eloquent",
+    "mongodb",
+    "orm",
+    "query builder"
+  ],
+  "author": "Jaspar Gupta",
+  "license": "MIT",
+  "dependencies": {
+    "lodash.mergewith": "^4.6.2"
+  },
+  "peerDependencies": {
+    "mongodb": "^4.8.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^28.1.6",
+    "@types/lodash.merge": "^4.6.7",
+    "@types/node": "^18.7.3",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.7",
+    "typescript": "^5.0.4"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JasparGupta/eloquent-query-builder.git"
+  }
 }

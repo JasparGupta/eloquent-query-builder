@@ -8,7 +8,7 @@ export interface Filter<T = unknown, Q extends Record<string, any> = Record<stri
 }
 
 export type Filters<T extends Record<string, any>> = {
-  [K in keyof T]: Filter<T[K], T>;
+  [K in keyof T]?: Filter<T[K], T>;
 } & Record<string, Filter<any, T>>;
 
 export default class Builder {
