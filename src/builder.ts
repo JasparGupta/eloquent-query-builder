@@ -124,7 +124,7 @@ export default class Builder {
     return this.where(field, '!=', value, boolean);
   }
 
-  public whereNotIn(field: string, values: any[], boolean: Bool = 'and not'): this {
+  public whereNotIn(field: string, values: any[], boolean: Extract<Bool, 'and not' | 'or not'> = 'and not'): this {
     return this.whereIn(field, values, boolean);
   }
 

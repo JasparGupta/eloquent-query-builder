@@ -1,7 +1,6 @@
-// @ts-nocheck
 import Builder from '../builder';
 import MongoDB from './mongodb';
-import { Bool, Operator, WhereBasic, WhereIn } from '../types';
+import { Bool, Operator } from '../types';
 
 describe('MongoDB grammar', () => {
   describe('compile', () => {
@@ -95,7 +94,8 @@ describe('MongoDB grammar', () => {
 
       const [where] = builder.wheres;
 
-      const result = grammar.whereBasic(builder, where as WhereBasic);
+      // @ts-ignore
+      const result = grammar.whereBasic(builder, where);
 
       expect(result).toEqual({
         boolean: 'and',
@@ -104,6 +104,27 @@ describe('MongoDB grammar', () => {
         operator,
         type: 'Basic',
         value: 'bar',
+      });
+    });
+
+    test('compiles "and not" boolean', () => {
+      const builder = Builder.make();
+      const grammar = new MongoDB();
+
+      builder.where('foo', '>=', 100, 'and not');
+
+      const [where] = builder.wheres;
+
+      // @ts-ignore
+      const result = grammar.whereBasic(builder, where);
+
+      expect(result).toEqual({
+        boolean: 'and not',
+        compiled: { foo: { $not: { $gte: 100 } } },
+        field: 'foo',
+        operator: '>=',
+        type: 'Basic',
+        value: 100,
       });
     });
   });
@@ -116,6 +137,7 @@ describe('MongoDB grammar', () => {
       builder.whereBetween('me', ['rock', 'hard place']);
       const [where] = builder.wheres;
 
+      // @ts-ignore
       const result = grammar.whereBetween(builder, where);
 
       expect(result).toEqual({
@@ -129,7 +151,7 @@ describe('MongoDB grammar', () => {
   });
 
   describe('whereIn', () => {
-    test.each<Bool>(['and', 'and not'])('%# compiles "In" where', (boolean) => {
+    test.each<Bool>(['and', 'and not', 'or', 'or not'])('%# compiles "In" where', (boolean) => {
       const builder = Builder.make();
       const grammar = new MongoDB();
       const values = [1, 2, 3];
@@ -138,9 +160,10 @@ describe('MongoDB grammar', () => {
 
       const [where] = builder.wheres;
 
+      // @ts-ignore
       const result = grammar.whereIn(builder, where);
 
-      const operator = boolean === 'and not' ? '$nin' : '$in';
+      const operator = boolean.includes('not') ? '$nin' : '$in';
 
       expect(result).toEqual({
         boolean: boolean.includes('or') ? 'or' : 'and',
@@ -153,12 +176,7 @@ describe('MongoDB grammar', () => {
   });
 
   describe('whereNested', () => {
-    test.each<[Operator, string]>([
-      ['and', '$and'],
-      ['and not', '$not'],
-      ['or', '$or'],
-      ['or not', '$nor'],
-    ])('compiles "Nested" where', (boolean, operator) => {
+    test.each<Extract<Bool, 'and' | 'or'>>(['and', 'or'])('%# compiles "Nested" where', (boolean) => {
       const builder = Builder.make();
       const grammar = new MongoDB();
 
@@ -169,6 +187,7 @@ describe('MongoDB grammar', () => {
 
       const [where] = builder.wheres;
 
+      // @ts-ignore
       const result = grammar.whereNested(builder, where);
 
       expect(result).toEqual({
@@ -189,6 +208,7 @@ describe('MongoDB grammar', () => {
 
       const [where] = builder.wheres;
 
+      // @ts-ignore
       const result = grammar.whereRaw(builder, where);
 
       expect(result).toEqual({

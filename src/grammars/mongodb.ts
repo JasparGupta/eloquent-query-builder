@@ -16,9 +16,8 @@ export default class MongoDB extends Grammar {
     '>=': '$gte',
   };
 
-  protected readonly logicals: Record<Bool, string> = {
+  protected readonly logicals: Record<Exclude<Bool, 'and not'>, string> = {
     'and': '$and',
-    'and not': '$not',
     'or': '$or',
     'or not': '$nor',
   };
@@ -51,18 +50,23 @@ export default class MongoDB extends Grammar {
   }
 
   protected logicalOperator({ boolean }: Pick<BaseWhere, 'boolean'>): string {
-    return this.logicals[boolean];
+    return this.logicals[boolean] ?? '$and';
   }
 
   protected whereBasic(query: Builder, where: WhereBasic): Compiled<WhereBasic> {
-    const { field, value } = where;
+    const { boolean, field, value } = where;
     const operator = this.comparisons[where.operator] ?? where.operator;
 
     const compiled = operator === '$eq'
       ? { [field]: value }
       : { [field]: { [operator]: value } };
 
-    return { ...where, compiled };
+    return {
+      ...where,
+      compiled: boolean === 'and not'
+        ? { [field]: { $not: compiled[field] } }
+        : compiled,
+    };
   }
 
   protected whereBetween(query: Builder, where: WhereBetween): Compiled<WhereBetween> {
