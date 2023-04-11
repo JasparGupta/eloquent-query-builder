@@ -76,7 +76,11 @@ export default class MongoDB extends Grammar {
 
     const operator = boolean === 'and not' ? '$nin' : '$in';
 
-    return { ...where, compiled: { [field]: { [operator]: value } } };
+    return {
+      ...where,
+      boolean: boolean.includes('or') ? 'or' : 'and',
+      compiled: { [field]: { [operator]: value } }
+    };
   }
 
   protected whereNested(query: Builder, where: WhereNested): Compiled<WhereNested> {
