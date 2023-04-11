@@ -1,4 +1,5 @@
 import mergeWith from 'lodash.mergewith';
+import isPlainObject from 'lodash.isplainobject';
 import { Filter } from 'mongodb';
 import Grammar from '../grammar';
 import { BaseWhere, Bool, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from '../types';
@@ -33,8 +34,7 @@ export default class MongoDB extends Grammar {
 
     const [first, second] = query.wheres;
 
-    // Second where dictates the first where boolean.
-    first.boolean = second.boolean;
+    first.boolean = second.boolean.includes('or') ? second.boolean : first.boolean;
 
     const wheres: Compiled<Where>[] = super.compile(query);
 
@@ -63,7 +63,7 @@ export default class MongoDB extends Grammar {
 
     return {
       ...where,
-      compiled: boolean === 'and not'
+      compiled: boolean === 'and not' && (isPlainObject(compiled[field]) || compiled[field] instanceof RegExp)
         ? { [field]: { $not: compiled[field] } }
         : compiled,
     };

@@ -107,25 +107,28 @@ describe('MongoDB grammar', () => {
       });
     });
 
-    test('compiles "and not" boolean', () => {
+    test.each<[Parameters<typeof Builder.prototype.where>, object]>([
+      [['foo', 'bar'], { foo: 'bar' }],
+      [['foo', '>=', 100], { foo: { $not: { $gte: 100 } } }],
+      [['foo', /bar/], { foo: { $not: /bar/ } }],
+      [['foo', '$regex', 'bar'], { foo: { $not: { $regex: 'bar' } } }],
+    ])('%# compiles "and not" boolean', ([field, operator, value], expected) => {
       const builder = Builder.make();
       const grammar = new MongoDB();
 
-      builder.where('foo', '>=', 100, 'and not');
+      builder.where(field, operator, value, 'and not');
 
       const [where] = builder.wheres;
 
       // @ts-ignore
       const result = grammar.whereBasic(builder, where);
 
-      expect(result).toEqual({
-        boolean: 'and not',
-        compiled: { foo: { $not: { $gte: 100 } } },
-        field: 'foo',
-        operator: '>=',
-        type: 'Basic',
-        value: 100,
-      });
+      expect(result).toEqual(
+        expect.objectContaining({
+          boolean: 'and not',
+          compiled: expected,
+        })
+      );
     });
   });
 
