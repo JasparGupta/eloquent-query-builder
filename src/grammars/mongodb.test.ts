@@ -1,12 +1,12 @@
 import type { Bool, Operator } from '../types';
 import { Builder } from '../builder';
-import { MongoDB } from './mongodb';
+import { MongoDBGrammar } from './mongodb';
 
 describe('MongoDB grammar', () => {
   describe('compile', () => {
     test('returns empty object if there are no wheres', () => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       const actual = grammar.compile(builder);
 
@@ -15,7 +15,7 @@ describe('MongoDB grammar', () => {
 
     test('returns the where clause if only 1 where clause', () => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder.where('foo', 'bar');
 
@@ -26,7 +26,7 @@ describe('MongoDB grammar', () => {
 
     test('compiles the query builder', () => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder
         .where('name', 'John')
@@ -88,7 +88,7 @@ describe('MongoDB grammar', () => {
       ['$elemMatch', '$elemMatch'],
     ])('compiles "Basic" where', (operator, compiledOperator) => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder.where('foo', operator, 'bar');
 
@@ -114,7 +114,7 @@ describe('MongoDB grammar', () => {
       [['foo', '$regex', 'bar'], { foo: { $not: { $regex: 'bar' } } }],
     ])('%# compiles "and not" boolean', ([field, operator, value], expected) => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder.where(field, operator, value, 'and not');
 
@@ -135,7 +135,7 @@ describe('MongoDB grammar', () => {
   describe('whereBetween', () => {
     test('compiles "Between" where', () => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder.whereBetween('me', ['rock', 'hard place']);
       const [where] = builder.wheres;
@@ -156,7 +156,7 @@ describe('MongoDB grammar', () => {
   describe('whereIn', () => {
     test.each<Bool>(['and', 'and not', 'or', 'or not'])('%# compiles "In" where', (boolean) => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
       const values = [1, 2, 3];
 
       builder.whereIn('foo', values, boolean);
@@ -181,7 +181,7 @@ describe('MongoDB grammar', () => {
   describe('whereNested', () => {
     test.each<Extract<Bool, 'and' | 'or'>>(['and', 'or'])('%# compiles "Nested" where', (boolean) => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder.whereNested((query) => {
         query.where('name', 'John');
@@ -205,7 +205,7 @@ describe('MongoDB grammar', () => {
   describe('whereRaw', () => {
     test.each<Bool>(['and', 'and not', 'or', 'or not'])('compiles "Raw" where', (boolean) => {
       const builder = Builder.make();
-      const grammar = new MongoDB();
+      const grammar = new MongoDBGrammar();
 
       builder.whereRaw({ foo: 'bar', bar: { $ne: 'baz' } }, boolean);
 
