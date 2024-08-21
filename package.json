@@ -2,11 +2,14 @@
   "name": "@jaspargupta/eloquent-query-builder",
   "version": "2.0.0",
   "description": "",
-  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*"
   ],
+  "exports": {
+    ".": "./dist/index.js",
+    "./grammars/*": "./dist/grammars/*.js"
+  },
   "scripts": {
     "clean": "rm -rf ./dist",
     "prebuild": "npm run clean",
