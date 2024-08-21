@@ -1,10 +1,10 @@
 import type { Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from '../types';
-import type Builder from '../builder';
-import Grammar from '../grammar';
+import type { Builder } from '../builder';
+import { Grammar } from '../grammar';
 
-type Compiled<T> = T & { compiled: string | null };
+type Compiled<T> = T & { compiled: string | null; };
 
-export default class LuceneGrammar extends Grammar {
+export class LuceneGrammar extends Grammar {
   public compile(builder: Builder): string {
     const wheres: Compiled<Where>[] = super.compile(builder);
     const first = wheres.shift();
@@ -20,12 +20,12 @@ export default class LuceneGrammar extends Grammar {
   protected whereBasic(_query: Builder, where: WhereBasic): Compiled<WhereBasic> {
     const { field, operator, value } = where;
 
-    if (/^\*/.test(value)) {
+    if (typeof value === 'string' && /^\*/.test(value)) {
       throw new Error('Lucene doesn\'t support using a "*" symbol as the first character of a search');
     }
 
     const compiled = (() => {
-      const sanatisedValue = /\s/.test(value) ? `"${value}"` : value;
+      const sanatisedValue = typeof value === 'string' && /\s/.test(value) ? `"${value}"` : value;
 
       switch (operator) {
         case '=':

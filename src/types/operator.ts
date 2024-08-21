@@ -1,5 +1,3 @@
-import operators from '../constants/operators';
+import { operators } from '../constants/operators';
 
-type Operator = typeof operators[number];
-
-export default Operator;
+export type Operator = typeof operators[number];

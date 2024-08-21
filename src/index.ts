@@ -1,3 +1,3 @@
-export * from './types';
-export { default as Grammar } from './grammar';
-export { default } from './builder';
+export type * from './types';
+export { Grammar } from './grammar';
+export { Builder, Builder as default } from './builder';

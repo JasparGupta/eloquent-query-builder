@@ -1,6 +1,6 @@
-import Builder from '../builder';
-import LuceneGrammar from './lucene';
-import { Bool } from '../types';
+import type { Bool } from '../types';
+import { Builder } from '../builder';
+import { LuceneGrammar } from './lucene';
 
 describe('LuceneGrammar', () => {
   describe('compile', () => {

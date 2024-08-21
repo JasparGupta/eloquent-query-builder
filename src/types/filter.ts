@@ -1,1 +1,1 @@
-export type { Filter as default } from '../builder';
+export type { Filter } from '../builder';

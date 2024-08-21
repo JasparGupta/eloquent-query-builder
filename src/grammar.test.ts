@@ -1,5 +1,5 @@
-import Grammar from './grammar';
-import Builder from './builder';
+import { Grammar } from './grammar';
+import { Builder } from './builder';
 import { WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
 
 describe('Grammar', () => {

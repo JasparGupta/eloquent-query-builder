@@ -1,13 +1,13 @@
 import mergeWith from 'lodash.mergewith';
 import isPlainObject from 'lodash.isplainobject';
-import { Filter } from 'mongodb';
-import Grammar from '../grammar';
-import { BaseWhere, Bool, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from '../types';
-import Builder from '../builder';
+import type { Filter } from 'mongodb';
+import { Grammar } from '../grammar';
+import type { BaseWhere, Bool, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from '../types';
+import type { Builder } from '../builder';
 
-type Compiled<T> = T & { compiled: Filter<any> }
+type Compiled<T> = T & { compiled: Filter<any>, };
 
-export default class MongoDB extends Grammar {
+export class MongoDBGrammar extends Grammar {
   protected readonly comparisons: Record<Operator, string> = {
     '=': '$eq',
     '!=': '$ne',

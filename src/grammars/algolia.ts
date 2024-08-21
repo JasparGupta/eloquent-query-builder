@@ -1,10 +1,10 @@
 import type { Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from '../types';
-import type Builder from '../builder';
-import Grammar from '../grammar';
+import type { Builder } from '../builder';
+import { Grammar } from '../grammar';
 
-export type Compiled<T> = T & { compiled: string };
+export type Compiled<T> = T & { compiled: string; };
 
-export default class AlgoliaGrammar extends Grammar {
+export class AlgoliaGrammar extends Grammar {
   protected readonly operators: Operator[] = ['=', '!=', '<', '>', '<=', '>='];
 
   public compile(query: Builder): string {
@@ -21,7 +21,7 @@ export default class AlgoliaGrammar extends Grammar {
   protected whereBasic(query: Builder, where: WhereBasic) {
     const { boolean, field, operator, type, value } = where;
 
-    if (/^\d+$/.test(value)) {
+    if (typeof value === 'number' || (typeof value === 'string' && /^\d+$/.test(value))) {
       return {
         ...where,
         compiled: `${field} ${operator} ${value}`,
@@ -31,7 +31,7 @@ export default class AlgoliaGrammar extends Grammar {
     return {
       ...where,
       boolean: operator === '!=' ? (boolean === 'and' ? 'and not' : 'or not') : boolean,
-      compiled: `${field}:${/\s/.test(value) ? `"${value}"` : value}`,
+      compiled: `${field}:${typeof value === 'string' && /\s/.test(value) ? `"${value}"` : value}`,
     };
   }
 

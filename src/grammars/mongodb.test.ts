@@ -1,6 +1,6 @@
-import Builder from '../builder';
-import MongoDB from './mongodb';
-import { Bool, Operator } from '../types';
+import type { Bool, Operator } from '../types';
+import { Builder } from '../builder';
+import { MongoDB } from './mongodb';
 
 describe('MongoDB grammar', () => {
   describe('compile', () => {

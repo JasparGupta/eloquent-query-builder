@@ -1,7 +1,7 @@
-import Builder from '../builder';
-import Where from './base-where';
+import type { Builder } from '../builder';
+import type { BaseWhere } from './base-where';
 
-export default interface WhereNested extends Where {
+export interface WhereNested extends BaseWhere {
   boolean: 'and' | 'or',
   type: 'Nested',
   value: Builder,

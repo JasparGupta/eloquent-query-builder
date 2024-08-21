@@ -1,6 +1,6 @@
-import Builder from './builder';
-import Grammar from './grammar';
-import { Bool, Filters, Operator, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
+import type { Bool, Filters, Operator, WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
+import { Builder } from './builder';
+import { Grammar } from './grammar';
 
 describe('Builder', () => {
   describe('apply', () => {

@@ -1,7 +1,7 @@
-import type Builder from './builder';
-import { WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
+import type { Builder } from './builder';
+import type { WhereBasic, WhereBetween, WhereIn, WhereNested, WhereRaw } from './types';
 
-export default abstract class Grammar {
+export abstract class Grammar {
   public compile(query: Builder): any {
     return query.wheres.map(where => {
       const method = `where${where.type}`;

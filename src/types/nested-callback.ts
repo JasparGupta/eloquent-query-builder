@@ -1,5 +1,5 @@
-import Builder from '../builder';
+import type { Builder } from '../builder';
 
-export default interface NestedCallback {
+export interface NestedCallback {
   (builder: Builder): void,
 }

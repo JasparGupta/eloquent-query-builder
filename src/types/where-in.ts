@@ -1,7 +1,7 @@
-import Where from './base-where';
+import type { BaseWhere } from './base-where';
 
-export default interface WhereIn extends Where {
+export interface WhereIn extends BaseWhere {
   field: string,
   type: 'In',
-  value: any[],
+  value: unknown[],
 }

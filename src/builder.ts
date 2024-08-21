@@ -1,6 +1,6 @@
-import tap from './support/tap';
-import type Grammar from './grammar';
-import { Bool, NestedCallback, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested } from './types';
+import { tap } from './support/tap';
+import type { Grammar } from './grammar';
+import type { Bool, NestedCallback, Operator, Where, WhereBasic, WhereBetween, WhereIn, WhereNested } from './types';
 import { operators } from './constants';
 
 export interface Filter<T = unknown, Q extends Record<string, any> = Record<string, any>> {
@@ -11,7 +11,7 @@ export type Filters<T extends Record<string, any>> = {
   [K in keyof T]?: Filter<T[K], T>;
 } & Record<string, Filter<any, T>>;
 
-export default class Builder {
+export class Builder {
   public wheres: Where[] = [];
 
   protected grammar: Grammar;

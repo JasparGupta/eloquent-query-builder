@@ -1,6 +1,6 @@
-import Where from './base-where';
+import { BaseWhere } from './base-where';
 
-export default interface WhereRaw extends Where {
+export interface WhereRaw extends BaseWhere {
   type: 'Raw',
   value: any,
 }

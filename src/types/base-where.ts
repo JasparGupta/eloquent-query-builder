@@ -1,6 +1,6 @@
-import Bool from './bool';
+import type { Bool } from './bool';
 
-export default interface BaseWhere {
+export interface BaseWhere {
   boolean: Bool,
   type: string,
 }

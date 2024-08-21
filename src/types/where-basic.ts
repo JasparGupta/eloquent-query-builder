@@ -1,8 +1,8 @@
-import Where from './base-where';
+import type { BaseWhere } from './base-where';
 
-export default interface WhereBasic extends Where {
+export interface WhereBasic extends BaseWhere {
   field: string,
-  operator: string,
+  operator: '=' | '!=' | '<' | '<=' | '>' | '>=' | (string & {}),
   type: 'Basic',
-  value: any,
+  value: unknown,
 }

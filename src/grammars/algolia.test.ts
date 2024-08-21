@@ -1,6 +1,6 @@
-import Builder from '../builder';
-import AlgoliaGrammar, { Compiled } from './algolia';
-import { Bool, WhereBasic, WhereBetween } from '../types';
+import type { Bool, WhereBasic } from '../types';
+import { Builder } from '../builder';
+import { AlgoliaGrammar, Compiled } from './algolia';
 
 describe('AlgoliaGrammar', () => {
   describe('compile', () => {

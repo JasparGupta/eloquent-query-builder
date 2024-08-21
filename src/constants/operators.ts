@@ -1,4 +1,4 @@
-const operators = [
+export const operators = [
   '=',
   '!=',
   '<',
@@ -6,5 +6,3 @@ const operators = [
   '>',
   '>='
 ] as const;
-
-export default operators;
