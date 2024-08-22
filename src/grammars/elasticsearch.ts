@@ -40,17 +40,18 @@ export class ElasticsearchGrammar extends Grammar {
         must: wheres.reduce<estypes.QueryDslQueryContainer[]>((clauses, { compiled, type, ...where }) => {
           const [previous] = clauses.slice(-1);
 
+          compiled = where.boolean.includes('not') ? { bool: { must_not: compiled } } : compiled;
+
           if (Array.isArray(previous?.bool?.should) && where.boolean.includes('or')) {
             previous.bool.should.push(compiled);
 
             return clauses;
           }
 
-          if (where.boolean.includes('or')) {
-            return [...clauses, { bool: { should: [compiled] } }];
-          }
-
-          return [...clauses, compiled];
+          return [
+            ...clauses,
+            where.boolean.includes('or') ? { bool: { should: [compiled] } } : compiled,
+          ];
         }, []),
       }
     };
@@ -60,56 +61,31 @@ export class ElasticsearchGrammar extends Grammar {
     const { boolean, field, operator, value } = where;
 
     if (['<', '<=', '>=', '>'].includes(operator) && typeof value === 'number') {
-      return {
-        ...where,
-        compiled: {
-          range: {
-            [field]: { [this.comparisons[operator]]: value },
-          }
-        }
-      };
+      return { ...where, compiled: { range: { [field]: { [this.comparisons[operator]]: value } } } };
     }
-
-    const term: estypes.QueryDslQueryContainer['term'] = { [field]: value };
-
-    // if (boolean === 'or') {
-    //   return {
-    //     ...where,
-    //     compiled: { bool: { should: { term } } }
-    //   };
-    // }
 
     return {
       ...where,
-      compiled: boolean === 'and not' || operator === '!='
-        ? { bool: { must_not: { term } } }
-        : { term }
+      boolean: operator === '!=' ? (boolean === 'and' ? 'and not' : 'or not') : boolean,
+      compiled: { term: { [field]: value } }
     };
   }
 
   protected whereBetween(query: Builder, where: WhereBetween): Compiled<WhereBetween> {
-    const { boolean, field, value: [from, to] } = where;
-
-    const range: estypes.QueryDslQueryContainer['range'] = { [field]: { gte: from, lte: to } };
+    const { field, value: [from, to] } = where;
 
     return {
       ...where,
-      compiled: boolean === 'and not'
-        ? { bool: { must_not: { range } } }
-        : { range }
+      compiled: { range: { [field]: { gte: from, lte: to } } },
     };
   }
 
   protected whereIn(query: Builder, where: WhereIn): Compiled<WhereIn> {
-    const { boolean, field, value } = where;
-
-    const terms: estypes.QueryDslQueryContainer['terms'] = { [field]: value };
+    const { field, value } = where;
 
     return {
       ...where,
-      compiled: boolean === 'and not'
-        ? { bool: { must_not: { terms } } }
-        : { terms }
+      compiled: { terms: { [field]: value } }
     };
   }
 

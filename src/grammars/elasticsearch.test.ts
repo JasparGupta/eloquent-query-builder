@@ -1,4 +1,5 @@
 import type { estypes } from '@elastic/elasticsearch';
+import type { Bool } from '../types';
 import { Builder } from '../builder';
 import { ElasticsearchGrammar } from './elasticsearch';
 
@@ -24,6 +25,7 @@ describe('ElasticsearchGrammar', () => {
       builder
         .where('foo', 'bar')
         .orWhere('foo', 'baz')
+        .orWhereNot('bar', 'baz')
         .where('number', '<=', 100)
         .whereBetween('range', [1, 10])
         .whereNested(builder => {
@@ -42,6 +44,7 @@ describe('ElasticsearchGrammar', () => {
                 should: [
                   { term: { foo: 'bar' } },
                   { term: { foo: 'baz' } },
+                  { bool: { must_not: { term: { bar: 'baz' } } } }
                 ]
               }
             },
@@ -64,12 +67,12 @@ describe('ElasticsearchGrammar', () => {
   describe('whereBasic', () => {
     test.each<[operator: string, expected: estypes.QueryDslQueryContainer, value?: string | number]>([
       ['=', { term: { foo: 'bar' } }],
-      ['!=', { bool: { must_not: { term: { foo: 'bar' } } } }],
+      ['!=', { term: { foo: 'bar' } }],
       ['<', { range: { foo: { lt: 10 } } }, 10],
       ['>', { range: { foo: { gt: 10 } } }, 10],
       ['<=', { range: { foo: { lte: 10 } } }, 10],
       ['>=', { range: { foo: { gte: 10 } } }, 10],
-    ])('%# compiles "Basic" where', (operator, expected, value = 'bar') => {
+    ])('compiles "Basic" where using opertator "%s"', (operator, expected, value = 'bar') => {
       builder.where('foo', operator, value);
 
       const [where] = builder.wheres;

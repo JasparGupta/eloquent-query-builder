@@ -1,12 +1,10 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+const { defaults: tsjPreset } = require('ts-jest/presets');
+
+/** @type {import('ts-jest/dist/types').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        noEmitOnError: true,
-      }
-    }
-  },
   preset: 'ts-jest',
   testEnvironment: 'node',
+  transform: {
+    ...tsjPreset.transform,
+  }
 };
