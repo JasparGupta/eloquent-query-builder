@@ -28,14 +28,14 @@ const query = builder.toQuery();
 
 /**
  * Hopefully you'll get something like this. :P
- * { 
+ * {
  *    $and: [
- *      { 
- *        foo: 'bar', 
- *        number: { '$gte': 10 }, 
- *        tag: { $in: ['a', 'b', 'c'] } 
+ *      {
+ *        foo: 'bar',
+ *        number: { '$gte': 10 },
+ *        tag: { $in: ['a', 'b', 'c'] }
  *      }
- *    ] 
+ *    ]
  * }
  */
 ```
@@ -44,9 +44,10 @@ const query = builder.toQuery();
 
 Currently this package ships with the following grammars:
 
-- [Lucene](./src/grammars/lucene.ts) [[reference](https://www.lucenetutorial.com/lucene-query-syntax.html)]
-- [MongoDB](./src/grammars/mongodb.ts)
+- [Elasticsearch](./src/grammars/elasticsearch.ts) [[reference](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl.html)]
 - [Algolia](./src/grammars/algolia.ts) [[reference](https://www.algolia.com/doc/api-reference/api-parameters/filters/#parameter-overview)]
+- [Lucene](./src/grammars/lucene.ts) [[reference](https://www.lucenetutorial.com/lucene-query-syntax.html)]
+- [MongoDB](./src/grammars/mongodb.ts) [[reference](https://www.mongodb.com/docs/manual/tutorial/query-documents/)]
 
 ## API
 
