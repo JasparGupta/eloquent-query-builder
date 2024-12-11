@@ -1,6 +1,6 @@
 {
   "name": "@jaspargupta/eloquent-query-builder",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "",
   "types": "dist/index.d.ts",
   "files": [
