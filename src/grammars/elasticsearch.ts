@@ -21,7 +21,7 @@ export class ElasticsearchGrammar extends Grammar {
   };
 
   public compile(query: Builder): estypes.QueryDslQueryContainer {
-    if (!query.wheres.length) return {};
+    if (!query.wheres.length) return { match_all: {} };
 
     const [first, second] = query.wheres;
 
